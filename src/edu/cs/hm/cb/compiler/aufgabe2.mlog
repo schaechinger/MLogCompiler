@@ -1,0 +1,24 @@
+:likes (erna, X).
+
+likes (erna, X): man (X), sportive (X).
+sportve (X): playsGolf (X).
+sportve (X): sailing (X).
+mlikes (erna, X): man (X), age (X, A), older (A, 30), playsPiano (X).
+
+man (hans).
+man (bernd).
+age (hans, 20).
+age (bernd, 25).
+playsGolf (bernd).
+man (heinz).
+age (heinz,40).
+playsGolf (bernd).
+man (heinz).
+age (heinz, 40).
+playsClavier (heinz).
+mann (max).
+age (max, 40).
+playsGuidtar (max).
+playsGolf (max).
+man (moritz, 40):
+sailing (moritz);
