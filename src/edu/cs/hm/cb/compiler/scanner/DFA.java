@@ -62,7 +62,7 @@ public class DFA implements IDFA
 	{
 		if (base.equals (from))
 		{
-			if (base.addChild ((State) to, symbol))
+			if (base.addSymbol (symbol, (State) to))
 			{
 				base = (State) to;
 			}

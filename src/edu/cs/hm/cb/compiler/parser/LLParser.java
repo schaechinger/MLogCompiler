@@ -68,21 +68,24 @@ public class LLParser implements IParser
 	{
 		showTree ();
 
-		System.out.printf ("%-20s %-7s   %-7s   %s   %s   %s\n", "Token", "From", "To", "Filter", "Variable", "Pattern");
-		System.out.println ("--------------------------------------------------------------------");
+		System.out.printf ("%-20s %-9s   %-9s   %s   %s   %s\n", "Token", "From", "To", "Filter", "Variable", "Pattern");
+		System.out.println ("------------------------------------------------------------------------");
 		
 //		getNumber ();
 		
 		while (true)
 		{
-			if (scanner.get () == null)
+			IToken token = scanner.get ();
+			if (token == null)
 //			if (getArith ())
 			{
 				break;
 			}
+			
+			System.out.println (token);
 		}
 		
-		System.out.println ("-----\nsolution: " + ((IToken) stack.pop ()).getPattern ());
+//		System.out.println ("-----\nsolution: " + ((IToken) stack.pop ()).getPattern ());
 	}
 	
 	

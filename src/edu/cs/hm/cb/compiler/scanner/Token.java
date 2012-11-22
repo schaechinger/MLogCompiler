@@ -97,7 +97,7 @@ public class Token implements IToken
 	public String toString ()
 	{
 		String passed = " ";
-		if (getTokenClass ().isPassed ());
+		if (getTokenClass ().isPassed ())
 		{
 			passed = "x";
 		}
@@ -108,6 +108,20 @@ public class Token implements IToken
 			variable = "x";
 		}
 		
-		return String.format ("%-20s %s - %s   %s   %s   '%s'", tokenClass, start, end, passed, variable, pattern);
+		return String.format ("%-20s %s - %s   %-6s   %-8s   %s", tokenClass, start, end, passed, variable, pattern);
+	}
+	
+	
+	@Override
+	public boolean equals (Object other)
+	{
+		Token token = (Token) other;
+		
+		if (token.getTokenClass ().equals (getTokenClass ()) && token.getPattern ().equals (pattern))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 }

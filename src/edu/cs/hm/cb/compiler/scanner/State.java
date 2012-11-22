@@ -34,14 +34,14 @@ public class State implements IState
 	private static HashMap<Integer, State> states;
 
 	/** Contains all symbols that link from this state to another */
-	private ArrayList<ISymbol> symbols = null;
+	private HashMap<Integer, ArrayList<ISymbol>> symbols = null;
 	/** Indicates if this state is a final one */
 	private boolean isFinal = false;
 	/**
 	 * Contains all children states that can be reached with the symbols defined
 	 * above.
 	 */
-	private HashMap<Integer, State> children = null;
+	// private HashMap<Integer, State> children = null;
 	/** Contains all existing states that can be this state's predecessors */
 	private HashMap<Integer, State> parents = null;
 	/** The unique id of the state */
@@ -59,9 +59,9 @@ public class State implements IState
 	private State (int id)
 	{
 		this.id = id;
-		children = new HashMap<Integer, State> ();
+		// children = new HashMap<Integer, State> ();
 		parents = new HashMap<Integer, State> ();
-		symbols = new ArrayList<ISymbol> ();
+		symbols = new HashMap<Integer, ArrayList<ISymbol>> ();
 	}
 
 
@@ -115,19 +115,25 @@ public class State implements IState
 	 *            indicates the symbol with that the child state can be reached
 	 * @return
 	 */
-	public boolean addChild (State child, ISymbol symbol)
-	{
-		if (!children.containsKey (child.getId ()))
-		{
-			children.put (child.getId (), child);
-			child.addParent (this);
-		}
-
-		child.addSymbol (symbol);
-
-		return true;
-	}
-
+	/*
+	 * public boolean addChild (State child, ISymbol symbol)
+	 * {
+	 * if (!children.containsKey (child.getId ()))
+	 * {
+	 * children.put (child.getId (), child);
+	 * child.addParent (this);
+	 * }
+	 * 
+	 * if (!symbols.containsKey (child.getId ()))
+	 * {
+	 * symbols.put (child.getId(), new ArrayList<ISymbol> ());
+	 * }
+	 * 
+	 * child.addSymbol (symbol, this);
+	 * 
+	 * return true;
+	 * }
+	 */
 
 	/**
 	 * Adds a new symbol to the list of symbols that with that this state can be
@@ -137,29 +143,26 @@ public class State implements IState
 	 *            the symbol with that this state can be reached
 	 * @return if the symbol was added or not (if it was already there)
 	 */
-	public boolean addSymbol (ISymbol symbol)
+	public boolean addSymbol (ISymbol symbol, IState to)
 	{
-		if (!symbols.contains (symbol))
+		// create a new arrayList if this symbol connects the state to a new one
+		if (!symbols.containsKey (to.getId ()))
 		{
-			symbols.add (symbol);
+			symbols.put (to.getId (), new ArrayList<ISymbol> ());
+			((State) to).addParent (this);
+		}
+
+		ArrayList<ISymbol> s = symbols.get (to.getId ());
+
+		if (!s.contains (symbol))
+		{
+			s.add (symbol);
+			symbols.put (to.getId (), s);
 
 			return true;
 		}
 
 		return false;
-	}
-
-
-	/**
-	 * Checks if this state can be reached with the symbol.
-	 * 
-	 * @param symbol
-	 *            the symbol that should be checked
-	 * @return if this state is reachable with the symbol
-	 */
-	public boolean isConnectedWithSymbol (ISymbol symbol)
-	{
-		return symbols.contains (symbol);
 	}
 
 
@@ -173,11 +176,13 @@ public class State implements IState
 	 */
 	public State getChild (ISymbol symbol)
 	{
-		for (State n : children.values ())
+		for (int stateId : symbols.keySet ())
 		{
-			if (n.isConnectedWithSymbol (symbol))
+			ArrayList<ISymbol> list = symbols.get (stateId);
+
+			if (list != null && list.contains (symbol))
 			{
-				return n;
+				return State.get (stateId);
 			}
 		}
 
@@ -242,7 +247,8 @@ public class State implements IState
 	 * Set the state to final and indicate that a token is found when you reach
 	 * this state.
 	 * 
-	 * @throws TokenClassNotFoundException if the tokenName was not found
+	 * @throws TokenClassNotFoundException
+	 *             if the tokenName was not found
 	 */
 	@Override
 	public void setFinal (String tokenName) throws TokenClassNotFoundException
@@ -270,6 +276,7 @@ public class State implements IState
 	public boolean equals (Object other)
 	{
 		State state = (State) other;
+		
 		if (this.getId () == state.getId ())
 		{
 			return true;
@@ -288,8 +295,8 @@ public class State implements IState
 	 */
 	public void display (String offset, boolean deep)
 	{
-		String string = offset + id + " (" + children.size () + " child";
-		if (children.size () != 1)
+		String string = offset + id + " (" + symbols.size () + " child";
+		if (symbols.size () != 1)
 		{
 			string += "ren";
 		}
@@ -305,12 +312,27 @@ public class State implements IState
 		{
 			string += " { ";
 
-			for (ISymbol symbol : symbols)
+			for (int i : symbols.keySet ())
 			{
-				string += symbol.getCharacter () + ", ";
+				ArrayList<ISymbol> s = symbols.get (i);
+
+				if (s.size () > 0)
+				{
+					string += "[" + i + "]: ";
+				}
+
+				for (ISymbol symbol : s)
+				{
+					string += symbol.getCharacter () + ", ";
+				}
 			}
 
-			string = string.substring (0, string.length () - 2) + " }";
+			string = string.substring (0, string.length () - 2);
+
+			if (!string.endsWith (" "))
+			{
+				string += " }";
+			}
 		}
 
 		System.out.println (string);
@@ -320,18 +342,19 @@ public class State implements IState
 			return;
 		}
 
-		for (State s : children.values ())
+		for (int keyId : symbols.keySet ())
 		{
+			State state = State.get (keyId);
 			string += "\n";
 
 			boolean goDeep = true;
 
-			if (s.equals (this))
+			if (state.equals (this))
 			{
 				goDeep = false;
 			}
 
-			s.display (offset + "  ", goDeep);
+			state.display (offset + "  ", goDeep);
 		}
 
 		return;

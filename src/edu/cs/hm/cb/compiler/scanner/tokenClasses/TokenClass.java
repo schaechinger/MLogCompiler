@@ -11,7 +11,7 @@ package edu.cs.hm.cb.compiler.scanner.tokenClasses;
 import edu.cs.hm.cb.compiler.scanner.interfaces.ITokenClass;
 
 
-public abstract class TokenClass implements ITokenClass
+public class TokenClass implements ITokenClass
 {
 	/** Indicates whether tokens of this tokenClass have a variable pattern */
 	protected boolean	variable;

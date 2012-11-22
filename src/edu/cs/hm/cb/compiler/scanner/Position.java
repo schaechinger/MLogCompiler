@@ -36,6 +36,6 @@ public class Position
 	@Override
 	public String toString ()
 	{
-		return String.format ("%3d:%-3d", column, line);
+		return String.format ("%4d:%-4d", column, line);
 	}
 }

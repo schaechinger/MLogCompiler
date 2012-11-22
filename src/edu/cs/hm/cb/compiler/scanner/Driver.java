@@ -238,8 +238,14 @@ public class Driver implements IScanner
 						token.setPositionEnd (endPosition);
 						token.setPositionStart (startPosition);
 
-						System.out.println (token);
-						return token;
+						if (token.getTokenClass ().isPassed ())
+						{
+							return token;
+						}
+						else
+						{
+							return get ();
+						}
 					}
 					else if (!eof)
 					{
