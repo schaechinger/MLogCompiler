@@ -15,7 +15,6 @@ import edu.cs.hm.cb.compiler.scanner.exceptions.TokenClassNotFoundException;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IState;
 import edu.cs.hm.cb.compiler.scanner.interfaces.ISymbol;
 import edu.cs.hm.cb.compiler.scanner.interfaces.ITokenClass;
-import edu.cs.hm.cb.compiler.scanner.tokenClasses.TokenClass;
 
 
 /**
@@ -247,14 +246,18 @@ public class State implements IState
 	 * Set the state to final and indicate that a token is found when you reach
 	 * this state.
 	 * 
-	 * @throws TokenClassNotFoundException
-	 *             if the tokenName was not found
+	 * @param tokenName
+	 *            the name of the tokenClass that identifies it
+	 * @param pass
+	 *            indicates if the tokenClass should be passed to the parser
+	 * @param variable
+	 *            indicates if the tokenClass has a variable structure
 	 */
 	@Override
-	public void setFinal (String tokenName) throws TokenClassNotFoundException
+	public void setFinal (String tokenName, boolean variable, boolean pass)
 	{
-		tokenClass = (TokenClass) TokenClassAdministrator.get ().getByName (
-				tokenName);
+		tokenClass = (TokenClass) TokenClassAdministrator.getInstance ()
+				.add (tokenName, variable, pass);
 		isFinal = true;
 	}
 
@@ -276,7 +279,7 @@ public class State implements IState
 	public boolean equals (Object other)
 	{
 		State state = (State) other;
-		
+
 		if (this.getId () == state.getId ())
 		{
 			return true;

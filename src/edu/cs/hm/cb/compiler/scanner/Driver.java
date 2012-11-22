@@ -128,15 +128,30 @@ public class Driver implements IScanner
 					// Epsilon symbol for nfas
 					else if (trans[0].equals ("E"))
 					{
-						dfa.addTrans (
-								State.get (trans[1]),
-								null,
-								State.get (trans[2]));
+						System.out.println ("Found E transition");
+//						dfa.addTrans (
+//								State.get (trans[1]),
+//								null,
+//								State.get (trans[2]));
 					}
 					// Final token
 					else if (trans[0].equals ("F"))
 					{
-						State.get (trans[1]).setFinal (trans[2]);
+						boolean pass = false;
+						boolean variable = false;
+						
+						// set variable type
+						if (trans.length > 3 && trans[3].equals ("x"))
+						{
+							variable = true;
+						}
+						// set pass type
+						if (trans.length > 4 && trans[4].equals ("x"))
+						{
+							pass = true;
+						}
+						
+						State.get (trans[1]).setFinal (trans[2], variable, pass);
 					}
 				}
 				
@@ -145,11 +160,7 @@ public class Driver implements IScanner
 		}
 		catch (IOException e)
 		{
-			System.out.println ("could not read from bufferedReader (initializing)");
-		}
-		catch (TokenClassNotFoundException e)
-		{
-			System.out.println (e.getMessage ());
+			System.out.println ("Could not read from dfa file.");
 		}
 	}
 	

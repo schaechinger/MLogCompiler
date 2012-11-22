@@ -8,11 +8,9 @@
 
 package edu.cs.hm.cb.compiler.scanner.interfaces;
 
-import edu.cs.hm.cb.compiler.scanner.exceptions.TokenClassNotFoundException;
-
 
 public interface ITokenClassAdministrator
 {
-	public void			add (ITokenClass tokenClass);
-	public ITokenClass	getByName (String name) throws TokenClassNotFoundException;
+	public ITokenClass	add (String tokenName, boolean pass, boolean variable);
+	public ITokenClass	getByName (String tokenName);
 }

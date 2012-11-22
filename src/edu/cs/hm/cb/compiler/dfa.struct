@@ -1,3 +1,33 @@
+
+	***************************************************************
+	***************************************************************
+	**                                                           **
+	** dfa.struct                                                **
+	** Compiler                                                  **
+	**                                                           **
+	** Created by Manuel Schaechinger on 09.11.2012              **
+	** Copyright (c) 2012 Delivery Studios. All rights reserved. **
+	**                                                           **
+	***************************************************************
+	***************************************************************
+	**                                                           **
+	** I Initial State                                           **
+	**   I <stateId>                                             **
+	** T Transition                                              **
+	**   T <startStateId> <symbol> <symbol>* <destStateId>       **
+	**     <symbol> :: \u0000                                    **
+	**     <symbol> :: x                                         **
+	**     <symbol> :: !x                                        **
+	**     <symbol> :: !all                                      **
+	** E Epsylon Transition                                      **
+	**   E <startStateId> <destStateId>                          **
+	** F Final State                                             **
+	**   F <stateId> <tokenName> <variable> {x,0} <pass {x,o}>   **
+	**                                                           **
+	***************************************************************
+	***************************************************************
+
+
 	**********
 	* Initial State
 	**********
@@ -18,85 +48,85 @@ F 2 LineComment x o
 	* BlockComment
 	* /* comment */
 	**********
-T 1 * 12
-T 12 !* 12
-T 12 \u000a 12
-T 12 * 13
-T 13 / 14
-F 14 BlockComment x o
+T 1 * 3
+T 3 !* 3
+T 3 \u000a 3
+T 3 * 4
+T 4 / 5
+F 5 BlockComment x o
 
 
 	**********
 	* WhiteSpace
 	* '   '
 	**********
-T 0 \u000a \u0020 3
-T 3 \u000a \u0020 3
-F 3 WhiteSpace x o
+T 0 \u000a \u0020 6
+T 6 \u000a \u0020 6
+F 6 WhiteSpace x o
 
 
 	**********
 	* BracketOpen
 	* (
 	**********
-T 0 ( 4
-F 4 BracketOpen o x
+T 0 ( 7
+F 7 BracketOpen o x
 
 
 	**********
 	* BracketClose
 	* )
 	**********
-T 0 ) 5
-F 5 BracketClose o x
+T 0 ) 8
+F 8 BracketClose o x
 
 
 	**********
 	* Dot
 	* .
 	**********
-T 0 . 6
-F 6 Dot o x
+T 0 . 9
+F 9 Dot o x
 
 
 	**********
 	* Colon
 	* :
 	**********
-T 0 : 7
-F 7 Colon o x
+T 0 : 10
+F 10 Colon o x
 
 
 	**********
 	* Comma
 	* ,
 	**********
-T 0 , 8
-F 8 Comma o x
+T 0 , 11
+F 11 Comma o x
 
 
 	**********
 	* Method
 	* fooBar
 	**********
-T 0 a b c d e f g h i j k l m n o p q r s t u v w x y z 9
-T 9 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 9
-F 9 Method x x
+T 0 a b c d e f g h i j k l m n o p q r s t u v w x y z 12
+T 12 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 12
+F 12 Method x x
 
 
 	**********
 	* Variable
 	* X
 	**********
-T 0 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 10
-T 10 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 10
-F 10 Variable x x
+T 0 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 13
+T 13 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 13
+F 13 Variable x x
 
 
 	**********
 	* Integer
 	* 1234
 	**********
-T 0 1 2 3 4 5 6 7 8 9 11
-T 11 1 2 3 4 5 6 7 8 9 0 11
-F 11 Integer x x
+T 0 1 2 3 4 5 6 7 8 9 14
+T 14 1 2 3 4 5 6 7 8 9 0 14
+F 14 Integer x x

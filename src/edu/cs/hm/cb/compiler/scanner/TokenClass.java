@@ -6,7 +6,7 @@
 // Copyrigtht (c) 2012 Delivery Studios. All rights reserved.
 //
 
-package edu.cs.hm.cb.compiler.scanner.tokenClasses;
+package edu.cs.hm.cb.compiler.scanner;
 
 import edu.cs.hm.cb.compiler.scanner.interfaces.ITokenClass;
 
@@ -14,11 +14,19 @@ import edu.cs.hm.cb.compiler.scanner.interfaces.ITokenClass;
 public class TokenClass implements ITokenClass
 {
 	/** Indicates whether tokens of this tokenClass have a variable pattern */
-	protected boolean	variable;
+	private boolean	variable;
 	/** Indicates whether tokens of this tokenClass should be be passed to the parser */
-	protected boolean	pass;
+	private boolean	pass;
 	/** The name of the tokenClass */
-	protected String	name;
+	private String	name;
+	
+	
+	public TokenClass (String tokenName, boolean variable, boolean pass)
+	{
+		this.name = tokenName;
+		this.variable = variable;
+		this.pass = pass;
+	}
 	
 
 	/* (non-Javadoc)
@@ -52,5 +60,19 @@ public class TokenClass implements ITokenClass
 	public String toString ()
 	{
 		return name;
+	}
+	
+	
+	@Override
+	public boolean equals (Object other)
+	{
+		TokenClass tokenClass = (TokenClass) other;
+		
+		if (tokenClass.getName ().equals (this.getName ()))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 }

@@ -11,6 +11,7 @@ package edu.cs.hm.cb.compiler.parser;
 import edu.cs.hm.cb.compiler.parser.interfaces.IParser;
 import edu.cs.hm.cb.compiler.scanner.DFA;
 import edu.cs.hm.cb.compiler.scanner.Driver;
+import edu.cs.hm.cb.compiler.scanner.TokenClassAdministrator;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IDFA;
 import edu.cs.hm.cb.compiler.scanner.interfaces.INumberTokenClass;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
@@ -58,6 +59,7 @@ public class LLParser implements IParser
 	public void showTree ()
 	{
 		System.out.println (dfa);
+		System.out.println (TokenClassAdministrator.getInstance ());
 	}
 	
 	

@@ -8,13 +8,11 @@
 
 package edu.cs.hm.cb.compiler.scanner.interfaces;
 
-import edu.cs.hm.cb.compiler.scanner.exceptions.TokenClassNotFoundException;
-
 
 public interface IState
 {
 	public boolean		isFinal ();
 	public int			getId ();
 	public ITokenClass	getTokenClass ();
-	public void			setFinal (String tokenName) throws TokenClassNotFoundException;
+	public void			setFinal (String tokenName, boolean passed, boolean variable);
 }
