@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.util.ArrayList;
 
-import edu.cs.hm.cb.compiler.scanner.exceptions.TokenClassNotFoundException;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IDFA;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IToken;
@@ -54,10 +53,8 @@ public class Driver implements IScanner
 		 * @param structPath is the path of the structure file for the dfa
 		 * @param sourcePath is the path of the sourcecode file
 		 */
-		public Driver (IDFA dfa, String structPath, String sourcePath)
+		public Driver (String structPath, String sourcePath)
 		{
-			this.dfa = dfa;
-			
 			tokenStack = new ArrayList<IToken>();
 			
 			column = 1;
@@ -72,8 +69,6 @@ public class Driver implements IScanner
 			{
 				System.out.println ("could not find file on path " + sourcePath);
 			}
-	
-			init ();
 		}
 
 	
@@ -82,6 +77,12 @@ public class Driver implements IScanner
 	 */
 	private void init ()
 	{
+		if (dfa == null)
+		{
+			System.out.println ("dfa not set");
+			return;
+		}
+		
 		try
 		{
 			int line = 1;
@@ -301,5 +302,13 @@ public class Driver implements IScanner
 	public void unget (IToken token)
 	{
 		tokenStack.add (token);
+	}
+	
+	
+	@Override
+	public void setDfa (IDFA dfa)
+	{
+		this.dfa = dfa;
+		init ();
 	}
 }

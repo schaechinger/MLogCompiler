@@ -8,7 +8,15 @@
 
 package edu.cs.hm.cb.compiler.parser.interfaces;
 
+import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
+
+
 public interface IParser
 {
 	public void parse ();
+	public void deriveRuleSystem ();
+	public void deriveRule ();
+	public void deriveOredicate ();
+	public void deriveTerm ();
+	public void setScanner (IScanner scanner);
 }

@@ -55,7 +55,7 @@ public class TokenClassAdministrator implements ITokenClassAdministrator
 	@Override
 	public ITokenClass add (String tokenName, boolean variable, boolean pass)
 	{
-		ITokenClass tokenClass = null;
+		ITokenClass tokenClass = new TokenClass ("Unknown", false, true);
 		
 		if (!tokenClasses.containsKey (tokenName))
 		{

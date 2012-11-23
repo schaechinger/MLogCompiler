@@ -11,7 +11,6 @@ package edu.cs.hm.cb.compiler.scanner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import edu.cs.hm.cb.compiler.scanner.exceptions.TokenClassNotFoundException;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IState;
 import edu.cs.hm.cb.compiler.scanner.interfaces.ISymbol;
 import edu.cs.hm.cb.compiler.scanner.interfaces.ITokenClass;
@@ -308,7 +307,7 @@ public class State implements IState
 
 		if (isFinal)
 		{
-			string += " [F]";
+			string += " [F " + getTokenClass ().getName () + "]";
 		}
 
 		if (symbols.size () > 0)
@@ -326,7 +325,16 @@ public class State implements IState
 
 				for (ISymbol symbol : s)
 				{
-					string += symbol.getCharacter () + ", ";
+					char character = symbol.getCharacter ();
+					
+					if ((int) character > 32 && (int) character < 127)
+					{
+						string += symbol.getCharacter () + ", ";
+					}
+					else
+					{
+						string += String.format ("\\u%04x, ", (int) character);
+					}
 				}
 			}
 

@@ -126,5 +126,7 @@ public class DFACreator
 		{
 			System.out.println ("Could not read from dfa struct file");
 		}
+		
+		System.out.println ("DFA creation successful");
 	}
 }

@@ -1,0 +1,8 @@
+edu.cs.hm.cb.compiler
+edu.cs.hm.cb.compiler.dfaCreator
+edu.cs.hm.cb.compiler.parser
+edu.cs.hm.cb.compiler.parser.exceptions
+edu.cs.hm.cb.compiler.parser.interfaces
+edu.cs.hm.cb.compiler.scanner
+edu.cs.hm.cb.compiler.scanner.exceptions
+edu.cs.hm.cb.compiler.scanner.interfaces

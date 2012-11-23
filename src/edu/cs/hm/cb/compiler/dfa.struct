@@ -15,9 +15,9 @@
 	**   I <stateId>                                             **
 	** T Transition                                              **
 	**   T <startStateId> <symbol> <symbol>* <destStateId>       **
-	**     <symbol> :: \u0000                                    **
-	**     <symbol> :: x                                         **
-	**     <symbol> :: !x                                        **
+	**     <symbol> :: \u000a                                    **
+	**     <symbol> :: a                                         **
+	**     <symbol> :: !a                                        **
 	**     <symbol> :: !all                                      **
 	** E Epsylon Transition                                      **
 	**   E <startStateId> <destStateId>                          **
@@ -60,8 +60,8 @@ F 5 BlockComment x o
 	* WhiteSpace
 	* '   '
 	**********
-T 0 \u000a \u0020 6
-T 6 \u000a \u0020 6
+T 0 \u0020 \u000a 6
+T 6 \u0020 \u000a 6
 F 6 WhiteSpace x o
 
 
@@ -106,27 +106,37 @@ F 11 Comma o x
 
 
 	**********
-	* Method
+	* ConstantNamed
 	* fooBar
 	**********
 T 0 a b c d e f g h i j k l m n o p q r s t u v w x y z 12
 T 12 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 12
-F 12 Method x x
+F 12 ConstantNamed x x
+
+	**********
+	* String
+	* "foo"
+	**********
+T 0 " 13
+T 13 !" 13
+T 13 \u000a 13
+T 13 " 14
+F 14 String x x
 
 
 	**********
 	* Variable
 	* X
 	**********
-T 0 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 13
-T 13 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 13
-F 13 Variable x x
+T 0 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 15
+T 15 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 15
+F 15 Variable x x
 
 
 	**********
 	* Integer
 	* 1234
 	**********
-T 0 1 2 3 4 5 6 7 8 9 14
-T 14 1 2 3 4 5 6 7 8 9 0 14
-F 14 Integer x x
+T 0 1 2 3 4 5 6 7 8 9 16
+T 16 1 2 3 4 5 6 7 8 9 0 16
+F 16 Integer x x

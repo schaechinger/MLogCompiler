@@ -20,15 +20,15 @@ import java.util.Iterator;
 public interface IPredicate
 {
 	/** Returns the number of terms of the predicate [likes (erna) -> likes]. */
-	public int getRank ();
+	public int				getRank ();
 	/** Returns the operator or constant. */
-	public IOperator getOperator ();
+	public IOperator		getOperator ();
 	/** Returns the term at index i or null if it doesn't exists [i >= rank]. */
-	public ITerm getTerm (int i);
+	public ITerm			getTerm (int i);
 	/** Loops through all terms. */
-	public Iterator<ITerm> iterator ();
+	public Iterator<ITerm>	iterator ();
 	/** TODO: wtf? */
-	public IPredicate substitute (ISubList sub);
+	public IPredicate		substitute (ISubList sub);
 	/** Generates a list of substitutions where every pair should be equal, otherwise null. */
-	public ISubList unify (IPredicate predicate);
+	public ISubList			unify (IPredicate predicate);
 }

@@ -14,6 +14,11 @@ import java.util.HashMap;
 import edu.cs.hm.cb.compiler.dfaCreator.DFACreator;
 import edu.cs.hm.cb.compiler.parser.LLParser;
 import edu.cs.hm.cb.compiler.parser.interfaces.IParser;
+import edu.cs.hm.cb.compiler.scanner.DFA;
+import edu.cs.hm.cb.compiler.scanner.Driver;
+import edu.cs.hm.cb.compiler.scanner.TokenClassAdministrator;
+import edu.cs.hm.cb.compiler.scanner.interfaces.IDFA;
+import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
 
 
 /**
@@ -41,10 +46,6 @@ public class Application
 			flags.put (args[i], args[i + 1]);
 		}
 
-		// TODO reorder fields
-		// TODO custom exceptions
-		// TODO check code style
-
 		if (args.length < 4)
 		{
 			System.out
@@ -54,9 +55,19 @@ public class Application
 		else
 		{
 			new DFACreator (flags.get ("-s")).createFile ();
-			IParser parser = new LLParser (1, flags.get ("-s").substring (0,
-					flags.get ("-s").lastIndexOf (".")) + "_gen.struct",
-					flags.get ("-m"));
+
+			IDFA dfa = new DFA ();
+
+			IScanner scanner = new Driver (flags.get ("-s").substring (0,
+					flags.get ("-s").lastIndexOf ("."))
+					+ "_gen.struct", flags.get ("-m"));
+			scanner.setDfa (dfa);
+
+			System.out.println (dfa);
+			System.out.println (TokenClassAdministrator.getInstance ());
+
+			IParser parser = new LLParser (1);
+			parser.setScanner (scanner);
 			parser.parse ();
 		}
 	}

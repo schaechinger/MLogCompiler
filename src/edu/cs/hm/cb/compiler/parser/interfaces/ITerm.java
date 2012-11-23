@@ -8,14 +8,20 @@
 
 package edu.cs.hm.cb.compiler.parser.interfaces;
 
+import java.util.Iterator;
+
 public interface ITerm
 {
-	/*
-	public int getRank ();
-	public ISymbol getSymbol ();
-	public ITerm getTerm (int i);
-	public Iterator<ITerm> getTerm (int i);
-	public ITerm substitude (ISubList sub);
-	public ISubList unify (ITerm t);
-	*/
+	/** Returns the number of terms of the predicate [likes (erna) -> likes]. */
+	public int				getRank ();
+	/** Returns the operator or constant. */
+	public IOperator		getOperator ();
+	/** Returns the term at index i or null if it doesn't exists [i >= rank]. */
+	public ITerm			getTerm (int i);
+	/** Loops through all terms. */
+	public Iterator<ITerm>	iterator ();
+	/** TODO: wtf? */
+	public ITerm			substitute (ISubList sub);
+	/** Generates a list of substitutions where every pair should be equal, otherwise null. */
+	public ISubList			unify (ITerm term);
 }
