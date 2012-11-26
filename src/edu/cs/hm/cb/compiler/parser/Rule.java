@@ -90,7 +90,7 @@ public class Rule implements IRule
 			
 			for (IPredicate predicate : body)
 			{
-				info += predicate;
+				info += predicate + ", ";
 			}
 		}
 		

@@ -26,6 +26,8 @@ import edu.cs.hm.cb.compiler.scanner.interfaces.IToken;
  */
 public class MLogParser implements IParser
 {
+	private int line = 1;
+	
 	/** Indicates whether the trace should be printed. */
 	private boolean printTrace;
 	/** The factory to create terms and other structure objects. */
@@ -39,6 +41,7 @@ public class MLogParser implements IParser
 
 	private final String TOKEN_ANONYMOUS_VARIABLE = "_";
 	private final String TOKEN_CONSTANT = "Constant";
+	private final String TOKEN_INTEGER = "Integer";
 	private final String TOKEN_STRING = "String";
 	private final String TOKEN_VARIABLE = "Variable";
 
@@ -66,23 +69,24 @@ public class MLogParser implements IParser
 			return;
 		}
 
-//		System.out.printf ("%-20s %-9s   %-9s   %s   %s   %s\n", "Token",
-//				"From", "To", "Filter", "Variable", "Pattern");
-//		System.out
-//				.println ("------------------------------------------------------------------------");
-//
-//		IToken token = null;
-//		while ((token = scanner.get ()) != null)
-//		{
-//			System.out.println (token);
-//		}
+		// System.out.printf ("%-20s %-9s   %-9s   %s   %s   %s\n", "Token",
+		// "From", "To", "Filter", "Variable", "Pattern");
+		// System.out
+		// .println
+		// ("------------------------------------------------------------------------");
+		//
+		// IToken token = null;
+		// while ((token = scanner.get ()) != null)
+		// {
+		// System.out.println (token);
+		// }
 
 		boolean accept = deriveRuleSystem ();
 		if (accept)
 		{
 			accept = scanner.get ().getTokenClass ().getName ().equals ("eof");
 		}
-		
+
 		log ("accepted: " + accept);
 		log ("get: " + scanner.get ());
 		log (stack.top ().toString ());
@@ -106,8 +110,9 @@ public class MLogParser implements IParser
 					IRule rule = (IRule) stack.pop ();
 					rules[i] = rule;
 				}
-				
-				stack.push (factory.createRuleSystem ((IQuery) stack.pop (), rules)); 
+
+				stack.push (factory.createRuleSystem ((IQuery) stack.pop (),
+						rules));
 
 				leave ("ruleSystem");
 				return true;
@@ -124,20 +129,23 @@ public class MLogParser implements IParser
 	public boolean deriveRule ()
 	{
 		enter ("rule");
-		
+
 		if (deriveRuleHead ())
 		{
+			IPredicate[] predicates = new IPredicate[0];
+
 			if (deriveRuleBody ())
 			{
-				
+				predicates = (IPredicate[]) stack.pop ();
 			}
-			
+
 			IToken token = scanner.get ();
-			
+
 			if (token.getPattern ().equals ("."))
 			{
-				stack.push (factory.createRule ((IPredicate) stack.pop (), new IPredicate[0]));
-				
+				stack.push (factory.createRule ((IPredicate) stack.pop (),
+						predicates));
+
 				leave ("rule");
 				return true;
 			}
@@ -146,38 +154,55 @@ public class MLogParser implements IParser
 				scanner.unget (token);
 			}
 		}
-		
+
 		leave ("rule");
 		return false;
 	}
-	
-	
+
+
 	public boolean deriveRuleHead ()
 	{
 		enter ("ruleHead");
-		
+
 		if (derivePredicate ())
 		{
 			leave ("ruleHead");
 			return true;
 		}
-		
+
 		leave ("ruleHead");
 		return false;
 	}
-	
-	
+
+
 	public boolean deriveRuleBody ()
 	{
 		enter ("ruleBody");
-		
+
 		IToken token = scanner.get ();
-		
+
+		if (token.getPattern ().equals (":"))
+		{
+			IPredicate[] predicates = derivePredicateList ();
+
+			if (predicates.length > 0)
+			{
+				stack.push (predicates);
+
+				leave ("ruleBody");
+				return true;
+			}
+		}
+		else
+		{
+			scanner.unget (token);
+		}
+
 		leave ("ruleBody");
 		return false;
 	}
-	
-	
+
+
 	public int deriveRuleList (int rules)
 	{
 		enter ("ruleList");
@@ -267,8 +292,8 @@ public class MLogParser implements IParser
 		leave ("predicateList");
 		return predicates;
 	}
-	
-	
+
+
 	private int predicateListLength (int predicates)
 	{
 		enter ("predicateList");
@@ -291,9 +316,6 @@ public class MLogParser implements IParser
 		leave ("predicateList");
 		return predicates;
 	}
-	
-	
-	
 
 
 	/**
@@ -433,9 +455,15 @@ public class MLogParser implements IParser
 		IToken token = scanner.get ();
 		if (token.getTokenClass ().getName ().equals (TOKEN_VARIABLE))
 		{
-			// trace (token);
 			stack.push (token);
 
+			leave ("variable");
+			return true;
+		}
+		else if (token.getTokenClass ().getName ().equals (TOKEN_INTEGER))
+		{
+			stack.push (token);
+			
 			leave ("variable");
 			return true;
 		}
@@ -523,7 +551,7 @@ public class MLogParser implements IParser
 		if (token.getPattern ().equals (":"))
 		{
 			IPredicate[] predicates = derivePredicateList ();
-			
+
 			if (predicates.length > 0)
 			{
 				token = scanner.get ();
@@ -600,7 +628,7 @@ public class MLogParser implements IParser
 	{
 		if (printTrace)
 		{
-			System.out.print ("\n" + offset + method);
+			System.out.printf ("\n%-5d%s%s", line++, offset, method);
 		}
 	}
 

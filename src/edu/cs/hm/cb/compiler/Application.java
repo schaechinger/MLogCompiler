@@ -82,11 +82,11 @@ public class Application
 					app.getFlag ("-s").lastIndexOf ("."))
 					+ "_gen.struct", app.getFlag ("-m"));
 			scanner.setDfa (dfa);
-
+			
 			System.out.println (dfa);
 			System.out.println (TokenClassAdministrator.getInstance ());
 
-			IParser parser = new MLogParser (Boolean.parseBoolean (app.getFlag ("-t")));
+			IParser parser = new MLogParser (true); //Boolean.parseBoolean (app.getFlag ("-t")));
 			parser.setScanner (scanner);
 			parser.parse ();
 		}

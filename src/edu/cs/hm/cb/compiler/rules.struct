@@ -16,6 +16,7 @@
 √ Term : Variable
 √ Term : ConstantString
 √ Term : Predicate
+  Term : Integer
 √ ConstantNamed : Operator
 √ Operator : <Constant>
 √ Variable : <Variable>
