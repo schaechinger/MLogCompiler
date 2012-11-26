@@ -125,13 +125,18 @@ public class Predicate implements IPredicate
 	@Override
 	public String toString ()
 	{
-		String info = operator + " (";
+		String info = "" + operator;
 		
-		for (ITerm term : terms)
+		if (terms.size () > 0)
 		{
-			info += " " + term;
+			info += " (";
+			for (ITerm term : terms)
+			{
+				info += " " + term;
+			}
+			info += " )";
 		}
 		
-		return info + " )";
+		return info;
 	}
 }

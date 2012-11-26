@@ -8,6 +8,7 @@
 
 package edu.cs.hm.cb.compiler.parser;
 
+import edu.cs.hm.cb.compiler.Application;
 import edu.cs.hm.cb.compiler.parser.interfaces.IOperator;
 import edu.cs.hm.cb.compiler.parser.interfaces.IParser;
 import edu.cs.hm.cb.compiler.parser.interfaces.IPredicate;
@@ -26,10 +27,8 @@ import edu.cs.hm.cb.compiler.scanner.interfaces.IToken;
  */
 public class MLogParser implements IParser
 {
+	/** The number of method calls for the parser (used in log mode). */
 	private int line = 1;
-
-	/** Indicates whether the trace should be printed. */
-	private boolean printTrace;
 	/** The factory to create terms and other structure objects. */
 	private Factory factory;
 	/** The scanner that retrieves the next token. */
@@ -49,10 +48,8 @@ public class MLogParser implements IParser
 	/**
 	 * Creates a new mlog parser in LL1.
 	 */
-	public MLogParser (boolean printTrace)
+	public MLogParser ()
 	{
-		this.printTrace = printTrace;
-
 		factory = Factory.getInstance ();
 		stack = Stack.getInstance ();
 	}
@@ -69,17 +66,13 @@ public class MLogParser implements IParser
 			return;
 		}
 
-		// System.out.printf ("%-20s %-9s   %-9s   %s   %s   %s\n", "Token",
-		// "From", "To", "Filter", "Variable", "Pattern");
-		// System.out
-		// .println
-		// ("------------------------------------------------------------------------");
-		//
-		// IToken token = null;
-		// while ((token = scanner.get ()) != null)
-		// {
-		// System.out.println (token);
-		// }
+		if (Application.log)
+		{
+			System.out.printf ("%-20s %-9s   %-9s   %s   %s   %s\n", "Token",
+					"From", "To", "Filter", "Variable", "Pattern");
+			System.out
+					.println ("------------------------------------------------------------------------");
+		}
 
 		boolean accept = deriveRuleSystem ();
 		if (accept)
@@ -88,8 +81,8 @@ public class MLogParser implements IParser
 		}
 
 		log ("accepted: " + accept);
-		log ("get: " + scanner.get ());
-		log (stack.top ().toString ());
+		log ("get: " + scanner.get ().getTokenClass ().getName ());
+		log ("Result:\n" + stack.top ().toString ());
 	}
 
 
@@ -236,7 +229,6 @@ public class MLogParser implements IParser
 						for (int i = listSize - 1; i >= 0; i--)
 						{
 							ITerm term = (ITerm) stack.pop ();
-							// trace ("deriveOperator: " + term);
 							terms[i] = term;
 						}
 
@@ -254,6 +246,10 @@ public class MLogParser implements IParser
 			else
 			{
 				scanner.unget (token);
+				stack.push (factory.createPredicate ((IOperator) stack.pop (),
+						new ITerm[0]));
+
+				return leave ("predicate", true);
 			}
 		}
 		else if (deriveConstantNamed ())
@@ -399,6 +395,12 @@ public class MLogParser implements IParser
 		if (deriveConstantNamed ())
 		{
 			stack.push (factory.createTerm ((IOperator) stack.pop (), null));
+
+			return leave ("term", true);
+		}
+		else if (deriveConstantString ())
+		{
+			stack.push (factory.createConstantString (((IToken) stack.pop ()).getPattern ()));
 
 			return leave ("term", true);
 		}
@@ -564,7 +566,7 @@ public class MLogParser implements IParser
 	 */
 	private void enter (String method)
 	{
-		trace (">> " + method);
+		trace (">> " + method, true);
 
 		offset += "  ";
 	}
@@ -572,7 +574,9 @@ public class MLogParser implements IParser
 
 	/**
 	 * Called when the parser creates an element.
-	 * @param element the name of the created
+	 * 
+	 * @param element
+	 *            the name of the created
 	 */
 	private void create (String element)
 	{
@@ -593,7 +597,7 @@ public class MLogParser implements IParser
 			offset = offset.substring (0, offset.length () - 2);
 		}
 
-		trace ("<< " + method + " [" + returnState + "]");
+		trace ("<< " + method + " [" + returnState + "]", false);
 
 		return returnState;
 	}
@@ -605,11 +609,18 @@ public class MLogParser implements IParser
 	 * @param method
 	 *            the name of the method
 	 */
-	private void trace (String method)
+	private void trace (String method, boolean lineNumber)
 	{
-		if (printTrace)
+		if (Application.trace)
 		{
-			System.out.printf ("\n%-5d%s%s", line++, offset, method);
+			if (lineNumber)
+			{
+				System.out.printf ("%-5d%s%s\n", line++, offset, method);
+			}
+			else
+			{
+				System.out.printf ("%5s%s%s\n", "", offset, method);
+			}
 		}
 	}
 
@@ -622,6 +633,6 @@ public class MLogParser implements IParser
 	 */
 	private void log (String message)
 	{
-		System.out.print ("\nLOG\t" + message);
+		System.out.println ("\t" + message);
 	}
 }

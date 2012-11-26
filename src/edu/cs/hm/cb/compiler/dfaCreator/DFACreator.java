@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import edu.cs.hm.cb.compiler.Application;
 import edu.cs.hm.cb.compiler.scanner.State;
 import edu.cs.hm.cb.compiler.scanner.Symbol;
 
@@ -126,7 +127,10 @@ public class DFACreator
 		{
 			System.out.println ("Could not read from dfa struct file");
 		}
-		
-		System.out.println ("DFA creation successful");
+
+		if (Application.log)
+		{
+			System.out.println ("DFA creation successful");
+		}
 	}
 }

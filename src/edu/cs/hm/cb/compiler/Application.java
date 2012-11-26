@@ -29,22 +29,26 @@ import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
  */
 public class Application
 {
+	/** Indicates whether the log functionallity is enabled or not. */
+	public static boolean log = false;
+	public static boolean trace = false;
+
 	/** Contains all enabled flags. */
 	private HashMap<String, String> flags = null;
-	
-	
+
+
 	public Application ()
 	{
 		flags = new HashMap<String, String> ();
 	}
-	
-	
+
+
 	public void addFlag (String flag, String value)
 	{
 		flags.put (flag, value);
 	}
-	
-	
+
+
 	public String getFlag (String flag)
 	{
 		return flags.get (flag);
@@ -60,16 +64,27 @@ public class Application
 	public static void main (String[] args)
 	{
 		Application app = new Application ();
-		
-		for (int i = 0; i <= args.length / 2; i += 2)
+
+		for (int i = 0; i < args.length; i++)
 		{
-			app.addFlag (args[i], args[i + 1]);
+			if (args[i].equals ("-t"))
+			{
+				trace = true;
+			}
+			else if (args[i].equals ("-l"))
+			{
+				log = true;
+			}
+			else if (i < args.length - 1)
+			{
+				app.addFlag (args[i], args[++i]);
+			}
 		}
 
 		if (args.length < 4)
 		{
 			System.out
-					.println ("usage: mlogc [-mst] [-m mlog file] [-s dfa structure] [-t trace]");
+					.println ("usage: mlogc [-mslt] [-m mlog file] [-s dfa structure] [-l enable log] [-t enable trace]");
 			System.exit (0);
 		}
 		else
@@ -82,11 +97,14 @@ public class Application
 					app.getFlag ("-s").lastIndexOf ("."))
 					+ "_gen.struct", app.getFlag ("-m"));
 			scanner.setDfa (dfa);
-			
-			System.out.println (dfa);
-			System.out.println (TokenClassAdministrator.getInstance ());
 
-			IParser parser = new MLogParser (true); //Boolean.parseBoolean (app.getFlag ("-t")));
+			if (log)
+			{
+				System.out.println (dfa);
+				System.out.println (TokenClassAdministrator.getInstance ());
+			}
+
+			IParser parser = new MLogParser ();
 			parser.setScanner (scanner);
 			parser.parse ();
 		}

@@ -24,5 +24,11 @@ public class ConstantString extends Constant
 		
 		this.string = string;
 	}
-
+	
+	
+	@Override
+	public String toString ()
+	{
+		return string;
+	}
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.util.ArrayList;
 
+import edu.cs.hm.cb.compiler.Application;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IDFA;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
 import edu.cs.hm.cb.compiler.scanner.interfaces.IToken;
@@ -85,7 +86,7 @@ public class Driver implements IScanner
 		
 		// add unknown and eof tokenClasses
 		TokenClassAdministrator administrator = TokenClassAdministrator.getInstance ();
-		administrator.add ("unknown", false, true);
+		administrator.add ("unknown", true, true);
 		administrator.add ("eof", false, true);
 		
 		try
@@ -257,6 +258,10 @@ public class Driver implements IScanner
 
 						if (token.getTokenClass ().isPassed ())
 						{
+							if (Application.log)
+							{
+								System.out.println (token);
+							}
 							return token;
 						}
 						else
@@ -276,6 +281,11 @@ public class Driver implements IScanner
 						System.err.println ("Unknown pattern '" + errorPattern + "' @ " + startPosition);
 						Token token = new Token (TokenClassAdministrator.getInstance ().getByName ("unknown"));
 						token.setPattern ("");
+						
+						if (Application.log)
+						{
+							System.out.println (token);
+						}
 						return token;
 					}
 				}
@@ -295,11 +305,16 @@ public class Driver implements IScanner
 		}
 		catch (IOException ioe)
 		{
-			System.out.println ("could not read from pushBackReader (scanning)");
+			System.out.println ("could not read from sourcefile");
 		}
 		
 		Token token = new Token (TokenClassAdministrator.getInstance ().getByName ("eof"));
 		token.setPattern ("");
+		
+		if (Application.log)
+		{
+			System.out.println (token);
+		}
 		return token;
 	}
 	
@@ -310,6 +325,10 @@ public class Driver implements IScanner
 	@Override
 	public void unget (IToken token)
 	{
+		if (Application.log)
+		{
+			System.out.printf ("  UNGET: %s '%s'\n", token.getTokenClass ().getName (), token.getPattern ());
+		}
 		tokenStack.add (token);
 	}
 	

@@ -20,4 +20,11 @@ public class ConstantNamed extends Constant
 	{
 		super (operator);
 	}
+	
+	
+	@Override
+	public String toString ()
+	{
+		return this.getOperator ().getName ();
+	}
 }
