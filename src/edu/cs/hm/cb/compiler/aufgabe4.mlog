@@ -1,26 +1,39 @@
-:likes (erna, X).
+// query
+:q.
 
 // rules
+q:likes (erna, X), writeLF, write ("Erna likes ", X).
 likes (erna, X): man (X), sportive (X).
 sportive (X): playsGolf (X).
 sportive (X): sailing (X).
 likes (erna, X): man (X), age (X, A), older (A, 30), playsPiano (X).
 
-/* here are all method calls */
+// hans
 man (hans).
-man (bernd).
 age (hans, 20).
+
+// bernd
+man (bernd).
 age (bernd, 25).
 playsGolf (bernd).
-man (heinz).
-age (heinz,40).
-playsGolf (bernd).
+
+// heinz
 man (heinz).
 age (heinz, 40).
 playsPiano (heinz).
+
+// max
 man (max).
-age (max, 40).
+age (max, 35).
 playsPiano (max).
 playsGolf (max).
-man (moritz, 40).
+
+// moritz
+man (moritz).
+age (moritz, 50).
 sailing (moritz).
+
+// define order of ages
+older (35, 30).
+older (40, 30).
+older (50, 30).

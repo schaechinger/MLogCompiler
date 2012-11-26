@@ -27,7 +27,7 @@ import edu.cs.hm.cb.compiler.scanner.interfaces.IToken;
 public class MLogParser implements IParser
 {
 	private int line = 1;
-	
+
 	/** Indicates whether the trace should be printed. */
 	private boolean printTrace;
 	/** The factory to create terms and other structure objects. */
@@ -114,14 +114,11 @@ public class MLogParser implements IParser
 				stack.push (factory.createRuleSystem ((IQuery) stack.pop (),
 						rules));
 
-				leave ("ruleSystem");
-				return true;
+				return leave ("ruleSystem", true);
 			}
 		}
 
-		leave ("ruleSystem");
-
-		return false;
+		return leave ("ruleSystem", false);
 	}
 
 
@@ -146,8 +143,7 @@ public class MLogParser implements IParser
 				stack.push (factory.createRule ((IPredicate) stack.pop (),
 						predicates));
 
-				leave ("rule");
-				return true;
+				return leave ("rule", true);
 			}
 			else
 			{
@@ -155,8 +151,7 @@ public class MLogParser implements IParser
 			}
 		}
 
-		leave ("rule");
-		return false;
+		return leave ("rule", false);
 	}
 
 
@@ -166,12 +161,10 @@ public class MLogParser implements IParser
 
 		if (derivePredicate ())
 		{
-			leave ("ruleHead");
-			return true;
+			return leave ("ruleHead", true);
 		}
 
-		leave ("ruleHead");
-		return false;
+		return leave ("ruleHead", false);
 	}
 
 
@@ -189,8 +182,7 @@ public class MLogParser implements IParser
 			{
 				stack.push (predicates);
 
-				leave ("ruleBody");
-				return true;
+				return leave ("ruleBody", true);
 			}
 		}
 		else
@@ -198,8 +190,7 @@ public class MLogParser implements IParser
 			scanner.unget (token);
 		}
 
-		leave ("ruleBody");
-		return false;
+		return leave ("ruleBody", false);
 	}
 
 
@@ -212,7 +203,7 @@ public class MLogParser implements IParser
 			rules = deriveRuleList (++rules);
 		}
 
-		leave ("ruleList");
+		leave ("ruleList", true);
 		return rules;
 	}
 
@@ -230,6 +221,7 @@ public class MLogParser implements IParser
 		enter ("predicate");
 		if (deriveOperator ())
 		{
+			ITerm[] terms = new ITerm[0];
 			IToken token = scanner.get ();
 			if (token.getPattern ().equals ("("))
 			{
@@ -239,7 +231,7 @@ public class MLogParser implements IParser
 					token = scanner.get ();
 					if (token.getPattern ().equals (")"))
 					{
-						ITerm[] terms = new ITerm[listSize];
+						terms = new ITerm[listSize];
 
 						for (int i = listSize - 1; i >= 0; i--)
 						{
@@ -251,8 +243,7 @@ public class MLogParser implements IParser
 						stack.push (factory.createPredicate (
 								(IOperator) stack.pop (), terms));
 
-						leave ("predicate");
-						return true;
+						return leave ("predicate", true);
 					}
 					else
 					{
@@ -267,12 +258,10 @@ public class MLogParser implements IParser
 		}
 		else if (deriveConstantNamed ())
 		{
-			leave ("predicate");
-			return true;
+			return leave ("predicate", true);
 		}
 
-		leave ("predicate");
-		return false;
+		return leave ("predicate", false);
 	}
 
 
@@ -289,7 +278,7 @@ public class MLogParser implements IParser
 			predicates[i] = predicate;
 		}
 
-		leave ("predicateList");
+		leave ("predicateList", true);
 		return predicates;
 	}
 
@@ -313,7 +302,7 @@ public class MLogParser implements IParser
 			}
 		}
 
-		leave ("predicateList");
+		leave ("predicateList", true);
 		return predicates;
 	}
 
@@ -346,7 +335,7 @@ public class MLogParser implements IParser
 			}
 		}
 
-		leave ("termList");
+		leave ("termList", true);
 		return terms;
 	}
 
@@ -363,9 +352,7 @@ public class MLogParser implements IParser
 	{
 		enter ("constantNamed");
 		boolean result = deriveOperator ();
-		leave ("constantNamed");
-
-		return result;
+		return leave ("constantNamed", result);
 	}
 
 
@@ -385,15 +372,13 @@ public class MLogParser implements IParser
 			// trace ("Operator :: " + token);
 			stack.push (factory.createOperator (token));
 
-			leave ("operator");
-			return true;
+			return leave ("operator", true);
 		}
 		else
 		{
 			scanner.unget (token);
 
-			leave ("operator");
-			return false;
+			return leave ("operator", false);
 		}
 	}
 
@@ -415,30 +400,25 @@ public class MLogParser implements IParser
 		{
 			stack.push (factory.createTerm ((IOperator) stack.pop (), null));
 
-			leave ("term");
-			return true;
+			return leave ("term", true);
 		}
 		else if (deriveVariable ())
 		{
 			stack.push (factory.createVariable (((IToken) stack.pop ())
 					.getPattern ()));
 
-			leave ("term");
-			return true;
+			return leave ("term", true);
 		}
 		else if (deriveConstantString ())
 		{
-			leave ("term");
-			return true;
+			return leave ("term", true);
 		}
 		else if (derivePredicate ())
 		{
-			leave ("term");
-			return true;
+			return leave ("term", true);
 		}
 
-		leave ("term");
-		return false;
+		return leave ("term", false);
 	}
 
 
@@ -457,28 +437,24 @@ public class MLogParser implements IParser
 		{
 			stack.push (token);
 
-			leave ("variable");
-			return true;
+			return leave ("variable", true);
 		}
 		else if (token.getTokenClass ().getName ().equals (TOKEN_INTEGER))
 		{
 			stack.push (token);
-			
-			leave ("variable");
-			return true;
+
+			return leave ("variable", true);
 		}
 		else if (deriveAnonymousVariable ())
 		{
-			leave ("variable");
-			return true;
+			return leave ("variable", true);
 		}
 		else
 		{
 			scanner.unget (token);
 		}
 
-		leave ("variable");
-		return false;
+		return leave ("variable", false);
 	}
 
 
@@ -496,16 +472,14 @@ public class MLogParser implements IParser
 		{
 			stack.push (token);
 
-			leave ("anonymousVariable");
-			return true;
+			return leave ("anonymousVariable", true);
 		}
 		else
 		{
 			scanner.unget (token);
 		}
 
-		leave ("anonymousVariable");
-		return false;
+		return leave ("anonymousVariable", false);
 	}
 
 
@@ -524,16 +498,14 @@ public class MLogParser implements IParser
 			// trace (token);
 			stack.push (token);
 
-			leave ("constantString");
-			return true;
+			return leave ("constantString", true);
 		}
 		else
 		{
 			scanner.unget (token);
 		}
 
-		leave ("constantString");
-		return false;
+		return leave ("constantString", false);
 	}
 
 
@@ -560,8 +532,7 @@ public class MLogParser implements IParser
 				{
 					stack.push (factory.createQuery (predicates));
 
-					leave ("query");
-					return true;
+					return leave ("query", true);
 				}
 				else
 				{
@@ -574,9 +545,7 @@ public class MLogParser implements IParser
 			scanner.unget (token);
 		}
 
-		leave ("query");
-
-		return false;
+		return leave ("query", false);
 	}
 
 
@@ -602,19 +571,31 @@ public class MLogParser implements IParser
 
 
 	/**
+	 * Called when the parser creates an element.
+	 * @param element the name of the created
+	 */
+	private void create (String element)
+	{
+
+	}
+
+
+	/**
 	 * Called at the end of a method to trace the route of the parser.
 	 * 
 	 * @param method
 	 *            the name of the left method
 	 */
-	private void leave (String method)
+	private boolean leave (String method, boolean returnState)
 	{
 		if (offset.length () >= 2)
 		{
 			offset = offset.substring (0, offset.length () - 2);
 		}
 
-		trace ("<< " + method);
+		trace ("<< " + method + " [" + returnState + "]");
+
+		return returnState;
 	}
 
 
