@@ -32,6 +32,8 @@ public abstract class Term implements ITerm
 	public Term (IOperator operator)
 	{
 		this ();
+		
+		this.operator = operator;
 	}
 
 

@@ -1,0 +1,24 @@
+√ RuleSystem : Query RuleList
+√ Query : ':' Predicate PredicateList '.'
+√ RuleList : Rule
+√ RuleList : Rule RuleList
+  Rule : RuleHead RuleBody '.'
+√ RuleHead : Predicate
+  RuleBody : ':' PredicateList
+  RuleBody : epsilon
+√ PredicateList : Predicate
+√ PredicateList : Predicate ',' PredicateList
+√ Predicate : ConstantNamed
+√ Predicate : Operator '(' TermList ')'
+√ TermList : Term
+√ TermList : Term ',' TermList
+√ Term : ConstantNamed
+√ Term : Variable
+√ Term : ConstantString
+√ Term : Predicate
+√ ConstantNamed : Operator
+√ Operator : <Constant>
+√ Variable : <Variable>
+√ Variable : AnonymousVariable
+√ AnonymousVariable : '_'
+√ ConstantString : <String>

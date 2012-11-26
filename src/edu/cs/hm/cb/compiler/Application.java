@@ -12,7 +12,7 @@ package edu.cs.hm.cb.compiler;
 import java.util.HashMap;
 
 import edu.cs.hm.cb.compiler.dfaCreator.DFACreator;
-import edu.cs.hm.cb.compiler.parser.LLParser;
+import edu.cs.hm.cb.compiler.parser.MLogParser;
 import edu.cs.hm.cb.compiler.parser.interfaces.IParser;
 import edu.cs.hm.cb.compiler.scanner.DFA;
 import edu.cs.hm.cb.compiler.scanner.Driver;
@@ -30,7 +30,25 @@ import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
 public class Application
 {
 	/** Contains all enabled flags. */
-	public static HashMap<String, String> flags = new HashMap<String, String> ();
+	private HashMap<String, String> flags = null;
+	
+	
+	public Application ()
+	{
+		flags = new HashMap<String, String> ();
+	}
+	
+	
+	public void addFlag (String flag, String value)
+	{
+		flags.put (flag, value);
+	}
+	
+	
+	public String getFlag (String flag)
+	{
+		return flags.get (flag);
+	}
 
 
 	/**
@@ -41,32 +59,34 @@ public class Application
 	 */
 	public static void main (String[] args)
 	{
+		Application app = new Application ();
+		
 		for (int i = 0; i <= args.length / 2; i += 2)
 		{
-			flags.put (args[i], args[i + 1]);
+			app.addFlag (args[i], args[i + 1]);
 		}
 
 		if (args.length < 4)
 		{
 			System.out
-					.println ("usage: mlogc [-ms] [-m mlog file] [-s dfa structure]");
+					.println ("usage: mlogc [-mst] [-m mlog file] [-s dfa structure] [-t trace]");
 			System.exit (0);
 		}
 		else
 		{
-			new DFACreator (flags.get ("-s")).createFile ();
+			new DFACreator (app.getFlag ("-s")).createFile ();
 
 			IDFA dfa = new DFA ();
 
-			IScanner scanner = new Driver (flags.get ("-s").substring (0,
-					flags.get ("-s").lastIndexOf ("."))
-					+ "_gen.struct", flags.get ("-m"));
+			IScanner scanner = new Driver (app.getFlag ("-s").substring (0,
+					app.getFlag ("-s").lastIndexOf ("."))
+					+ "_gen.struct", app.getFlag ("-m"));
 			scanner.setDfa (dfa);
 
 			System.out.println (dfa);
 			System.out.println (TokenClassAdministrator.getInstance ());
 
-			IParser parser = new LLParser (1);
+			IParser parser = new MLogParser (Boolean.parseBoolean (app.getFlag ("-t")));
 			parser.setScanner (scanner);
 			parser.parse ();
 		}

@@ -15,7 +15,8 @@ public class ConstantString extends Constant
 	
 
 	/**
-	 * @param operator
+	 * Creates a new ConstantString.
+	 * @param string the sring that holds the data
 	 */
 	public ConstantString (String string)
 	{

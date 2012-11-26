@@ -17,69 +17,126 @@ import edu.cs.hm.cb.compiler.parser.interfaces.IQuery;
 import edu.cs.hm.cb.compiler.parser.interfaces.IRule;
 import edu.cs.hm.cb.compiler.parser.interfaces.IRuleSystem;
 import edu.cs.hm.cb.compiler.parser.interfaces.ITerm;
+import edu.cs.hm.cb.compiler.scanner.Token;
+import edu.cs.hm.cb.compiler.scanner.interfaces.IToken;
 
 
 public class Factory implements IFactory
 {
 	private static Factory instance = null;
-	
-	
+
+
 	private Factory ()
 	{
-		
+
 	}
-	
-	
-	public Factory getInstance ()
+
+
+	public static Factory getInstance ()
 	{
 		if (instance == null)
 		{
 			instance = new Factory ();
 		}
-		
+
 		return instance;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createRuleSystem(edu.cs.hm.cb.compiler.parser.interfaces.IQuery, java.util.List)
+
+
+	/**
+	 * Creates a rule system.
+	 * 
+	 * @param query
+	 * @param rules
 	 */
 	@Override
-	public IRuleSystem createRuleSystem (IQuery query, List<IRule> rules)
+	public IRuleSystem createRuleSystem (IQuery query, IRule[] rules)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		IRuleSystem ruleSystem = new RuleSystem (query);
+
+		for (IRule rule : rules)
+		{
+			((RuleSystem) ruleSystem).addRule (rule);
+		}
+
+		return ruleSystem;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createRule(edu.cs.hm.cb.compiler.parser.interfaces.IPredicate, edu.cs.hm.cb.compiler.parser.interfaces.IPredicate[])
+
+	/**
+	 * Creates a new rule.
+	 * 
+	 * @param head
+	 *            the method name
+	 * @param body
+	 *            the list of arguments
 	 */
 	@Override
 	public IRule createRule (IPredicate head, IPredicate[] body)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		IRule rule = new Rule (head);
+
+		for (IPredicate predicate : body)
+		{
+			((Rule) rule).addPredicate (predicate);
+		}
+
+		return rule;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createQuery(edu.cs.hm.cb.compiler.parser.interfaces.IPredicate[])
+
+	/**
+	 * Creates a new operator.
+	 * 
+	 * @param name
+	 *            the name of the operator which is the pattern of the token.
+	 */
+	@Override
+	public IOperator createOperator (IToken token)
+	{
+		return new Operator ((Token) token);
+	}
+
+
+	/**
+	 * Creates a new query.
+	 * 
+	 * @param body
+	 *            a list of predicates
 	 */
 	@Override
 	public IQuery createQuery (IPredicate[] body)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		IQuery query = new Query ();
+
+		for (IPredicate predicate : body)
+		{
+			((Query) query).addPredicate (predicate);
+		}
+
+		return query;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createPredicate(edu.cs.hm.cb.compiler.parser.interfaces.IOperator, edu.cs.hm.cb.compiler.parser.interfaces.ITerm[])
+
+	/**
+	 * Creates a new predicate
+	 * Format
+	 * Operator : '(' TermList ')'
+	 * ConstantNamed
 	 */
 	@Override
 	public IPredicate createPredicate (IOperator operator, ITerm[] arguments)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		IPredicate predicate = new Predicate (operator);
+
+		for (ITerm term : arguments)
+		{
+			((Predicate) predicate).addTerm (term);
+		}
+
+		return predicate;
 	}
+
 
 	/**
 	 * Creates a new term with an operator and arguments.
@@ -89,11 +146,7 @@ public class Factory implements IFactory
 	{
 		ITerm term = null;
 		
-		if (arguments.length > 0)
-		{
-			term = new TermComposed (operator);
-		}
-		else if (operator.getType ().getName ().equals ("Variable"))
+		if (operator.getType ().getName ().equals ("Variable"))
 		{
 			term = createVariable (operator.getName ());
 		}
@@ -101,18 +154,23 @@ public class Factory implements IFactory
 		{
 			term = createConstantString (operator.getName ());
 		}
-		else
+		else if (operator.getType ().getName ().equals ("Constant"))
 		{
 			term = createConstantNamed (operator);
 		}
-		
-		for (ITerm argument : arguments)
+		else if (arguments.length > 0)
 		{
-			((TermComposed) term).add (argument);
+			term = new TermComposed (operator);
+			
+			for (ITerm argument : arguments)
+			{
+				((TermComposed) term).add (argument);
+			}
 		}
-		
+
 		return term;
 	}
+
 
 	/**
 	 * Creates a new variable or an anonymousVariable if the string is '_'.
@@ -130,8 +188,13 @@ public class Factory implements IFactory
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createConstantNamed(edu.cs.hm.cb.compiler.parser.interfaces.IOperator)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createConstantNamed(
+	 * edu.cs.hm.cb.compiler.parser.interfaces.IOperator)
 	 */
 	@Override
 	public ConstantNamed createConstantNamed (IOperator operator)
@@ -139,13 +202,18 @@ public class Factory implements IFactory
 		return new ConstantNamed (operator);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createConstantString(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.cs.hm.cb.compiler.parser.interfaces.IFactory#createConstantString
+	 * (java.lang.String)
 	 */
 	@Override
 	public ConstantString createConstantString (String string)
 	{
 		return new ConstantString (string);
 	}
-	
+
 }

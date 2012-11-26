@@ -36,4 +36,11 @@ public class Operator implements IOperator
 	{
 		return token.getTokenClass ();
 	}
+	
+	
+	@Override
+	public String toString ()
+	{
+		return token.getPattern ();
+	}
 }

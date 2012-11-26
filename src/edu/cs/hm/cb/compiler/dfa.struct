@@ -106,12 +106,12 @@ F 11 Comma o x
 
 
 	**********
-	* ConstantNamed
+	* Constant
 	* fooBar
 	**********
 T 0 a b c d e f g h i j k l m n o p q r s t u v w x y z 12
 T 12 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 12
-F 12 ConstantNamed x x
+F 12 Constant x x
 
 	**********
 	* String
@@ -140,3 +140,19 @@ F 15 Variable x x
 T 0 1 2 3 4 5 6 7 8 9 16
 T 16 1 2 3 4 5 6 7 8 9 0 16
 F 16 Integer x x
+
+
+	**********
+	* Double
+	* 12.34
+	**********
+T 16 . 17
+T 17 1 2 3 4 5 6 7 8 9 0 17
+F 17 Double x x
+
+	**********
+	* Float
+	* 12.34f
+	**********
+T 17 f 18
+F 18 Float x x

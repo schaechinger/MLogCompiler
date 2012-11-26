@@ -8,8 +8,6 @@
 
 package edu.cs.hm.cb.compiler.parser;
 
-import edu.cs.hm.cb.compiler.parser.interfaces.IOperator;
-
 
 public class Variable extends Term
 {
@@ -22,10 +20,18 @@ public class Variable extends Term
 	public Variable (String string)
 	{
 		super ();
+		
+		this.name = string;
 	}
 	
 	
 	public String getName ()
+	{
+		return name;
+	}
+	
+	
+	public String toString ()
 	{
 		return name;
 	}

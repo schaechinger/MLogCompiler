@@ -1,0 +1,4 @@
+:likes (erna, X).
+
+// rules
+likes (erna, X): man (X), sportive (X).

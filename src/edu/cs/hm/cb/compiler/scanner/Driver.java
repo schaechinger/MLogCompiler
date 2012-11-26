@@ -83,6 +83,11 @@ public class Driver implements IScanner
 			return;
 		}
 		
+		// add unknown and eof tokenClasses
+		TokenClassAdministrator administrator = TokenClassAdministrator.getInstance ();
+		administrator.add ("unknown", false, true);
+		administrator.add ("eof", false, true);
+		
 		try
 		{
 			int line = 1;
@@ -269,7 +274,9 @@ public class Driver implements IScanner
 						
 						System.err.println ("Syntax error:");
 						System.err.println ("Unknown pattern '" + errorPattern + "' @ " + startPosition);
-						return null;
+						Token token = new Token (TokenClassAdministrator.getInstance ().getByName ("unknown"));
+						token.setPattern ("");
+						return token;
 					}
 				}
 				// final state detected
@@ -291,7 +298,9 @@ public class Driver implements IScanner
 			System.out.println ("could not read from pushBackReader (scanning)");
 		}
 		
-		return null;
+		Token token = new Token (TokenClassAdministrator.getInstance ().getByName ("eof"));
+		token.setPattern ("");
+		return token;
 	}
 	
 	

@@ -1,7 +1,0 @@
-D N S F
-D T ( ) a +
-
-I S
-T S -> F
-T S -> ( S + F )
-T F -> a

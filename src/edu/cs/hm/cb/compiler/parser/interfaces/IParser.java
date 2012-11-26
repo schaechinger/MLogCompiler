@@ -13,10 +13,11 @@ import edu.cs.hm.cb.compiler.scanner.interfaces.IScanner;
 
 public interface IParser
 {
-	public void parse ();
-	public void deriveRuleSystem ();
-	public void deriveRule ();
-	public void deriveOredicate ();
-	public void deriveTerm ();
-	public void setScanner (IScanner scanner);
+	public void		parse ();
+	public boolean	deriveRuleSystem ();
+	public boolean	deriveRule ();
+	public boolean	derivePredicate ();
+	public boolean	deriveTerm ();
+	/** Set the scanner {Strategy}. */
+	public void		setScanner (IScanner scanner);
 }

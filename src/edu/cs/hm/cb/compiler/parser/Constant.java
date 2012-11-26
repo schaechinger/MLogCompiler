@@ -26,5 +26,11 @@ public class Constant extends Term
 	{
 		super (operator);
 	}
-
+	
+	
+	@Override
+	public String toString ()
+	{
+		return this.getOperator ().getName ();
+	}
 }
