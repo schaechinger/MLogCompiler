@@ -83,7 +83,7 @@ public class RuleSystem implements IRuleSystem
 	@Override
 	public String toString ()
 	{
-		String info = "RuleSystem:\n" + query;
+		String info = "RuleSystem:\nQuery:\n  " + query + "\nRuleList:";
 		
 		for (IRule rule : rules)
 		{

@@ -28,7 +28,7 @@ public interface IPredicate
 	/** Loops through all terms. */
 	public Iterator<ITerm>	iterator ();
 	/** TODO: wtf? */
-	public IPredicate		substitute (ISubList sub);
+//	public IPredicate		substitute (ISubList sub);
 	/** Generates a list of substitutions where every pair should be equal, otherwise null. */
 	public ISubList			unify (IPredicate predicate);
 }

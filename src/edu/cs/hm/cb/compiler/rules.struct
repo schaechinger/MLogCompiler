@@ -2,10 +2,10 @@
 √ Query : ':' Predicate PredicateList '.'
 √ RuleList : Rule
 √ RuleList : Rule RuleList
-  Rule : RuleHead RuleBody '.'
+√ Rule : RuleHead RuleBody '.'
 √ RuleHead : Predicate
-  RuleBody : ':' PredicateList
-  RuleBody : epsilon
+√ RuleBody : ':' PredicateList
+√ RuleBody : epsilon
 √ PredicateList : Predicate
 √ PredicateList : Predicate ',' PredicateList
 √ Predicate : ConstantNamed
@@ -16,7 +16,7 @@
 √ Term : Variable
 √ Term : ConstantString
 √ Term : Predicate
-  Term : Integer
+√ Term : Integer
 √ ConstantNamed : Operator
 √ Operator : <Constant>
 √ Variable : <Variable>

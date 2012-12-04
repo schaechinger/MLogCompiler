@@ -18,7 +18,7 @@ import edu.cs.hm.cb.compiler.parser.interfaces.ISubList;
 import edu.cs.hm.cb.compiler.parser.interfaces.ITerm;
 
 
-public class Predicate implements IPredicate
+public class Predicate extends Term implements IPredicate
 {
 	private IOperator operator = null;
 	private List<ITerm> terms = null;
@@ -100,7 +100,7 @@ public class Predicate implements IPredicate
 	 * hm.cb.compiler.parser.interfaces.ISubList)
 	 */
 	@Override
-	public IPredicate substitute (ISubList sub)
+	public ITerm substitute (ISubList sub)
 	{
 		// TODO Auto-generated method stub
 		return null;

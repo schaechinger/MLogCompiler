@@ -201,6 +201,16 @@ public class Factory implements IFactory
 	{
 		return new ConstantNamed (operator);
 	}
+	
+	
+	/**
+	 * Creates a constantInteger.
+	 * @param value the value of the constantInteger from the source code
+	 */
+	public ConstantInteger	createConstantInteger (int value)
+	{
+		return new ConstantInteger (value);
+	}
 
 
 	/*

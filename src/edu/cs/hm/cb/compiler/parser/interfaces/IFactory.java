@@ -8,6 +8,7 @@
 
 package edu.cs.hm.cb.compiler.parser.interfaces;
 
+import edu.cs.hm.cb.compiler.parser.ConstantInteger;
 import edu.cs.hm.cb.compiler.parser.ConstantNamed;
 import edu.cs.hm.cb.compiler.parser.ConstantString;
 import edu.cs.hm.cb.compiler.parser.Variable;
@@ -32,6 +33,8 @@ public interface IFactory
 	public Variable			createVariable (String string);
 	/** Creates a new constantNamed. */
 	public ConstantNamed	createConstantNamed (IOperator operator);
+	/** Creates a new constantInteger. */
+	public ConstantInteger	createConstantInteger (int value);
 	/** Creates a new constantString. */
 	public ConstantString	createConstantString (String string);
 }

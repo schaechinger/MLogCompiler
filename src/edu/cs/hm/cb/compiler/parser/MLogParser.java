@@ -81,8 +81,8 @@ public class MLogParser implements IParser
 		}
 
 		log ("accepted: " + accept);
-		log ("get: " + scanner.get ().getTokenClass ().getName ());
-		log ("Result:\n" + stack.top ().toString ());
+		log ("Next tokenClass: " + scanner.get ().getTokenClass ().getName ());
+		log ("\n" + stack.top ().toString ());
 	}
 
 
@@ -392,16 +392,8 @@ public class MLogParser implements IParser
 	public boolean deriveTerm ()
 	{
 		enter ("term");
-		if (deriveConstantNamed ())
+		if (derivePredicate ())
 		{
-			stack.push (factory.createTerm ((IOperator) stack.pop (), null));
-
-			return leave ("term", true);
-		}
-		else if (deriveConstantString ())
-		{
-			stack.push (factory.createConstantString (((IToken) stack.pop ()).getPattern ()));
-
 			return leave ("term", true);
 		}
 		else if (deriveVariable ())
@@ -413,9 +405,25 @@ public class MLogParser implements IParser
 		}
 		else if (deriveConstantString ())
 		{
+			stack.push (factory.createConstantString (((IToken) stack.pop ())
+					.getPattern ()));
+
 			return leave ("term", true);
 		}
-		else if (derivePredicate ())
+		else if (deriveConstantInteger ())
+		{
+			stack.push (factory.createConstantInteger (Integer
+					.parseInt (((IToken) stack.pop ()).getPattern ())));
+
+			return leave ("term", true);
+		}
+		else if (deriveConstantNamed ())
+		{
+			stack.push (factory.createTerm ((IOperator) stack.pop (), null));
+
+			return leave ("term", true);
+		}
+		else if (deriveConstantString ())
 		{
 			return leave ("term", true);
 		}
@@ -435,20 +443,14 @@ public class MLogParser implements IParser
 	{
 		enter ("variable");
 		IToken token = scanner.get ();
-		if (token.getTokenClass ().getName ().equals (TOKEN_VARIABLE))
+		if (deriveAnonymousVariable (token))
+		{
+			return leave ("variable", true);
+		}
+		else if (token.getTokenClass ().getName ().equals (TOKEN_VARIABLE))
 		{
 			stack.push (token);
 
-			return leave ("variable", true);
-		}
-		else if (token.getTokenClass ().getName ().equals (TOKEN_INTEGER))
-		{
-			stack.push (token);
-
-			return leave ("variable", true);
-		}
-		else if (deriveAnonymousVariable ())
-		{
 			return leave ("variable", true);
 		}
 		else
@@ -466,22 +468,42 @@ public class MLogParser implements IParser
 	 * Format
 	 * '_'
 	 */
-	public boolean deriveAnonymousVariable ()
+	public boolean deriveAnonymousVariable (IToken token)
 	{
 		enter ("anonymousVariable");
-		IToken token = scanner.get ();
 		if (token.getTokenClass ().getName ().equals (TOKEN_ANONYMOUS_VARIABLE))
 		{
 			stack.push (token);
 
 			return leave ("anonymousVariable", true);
 		}
+
+		return leave ("anonymousVariable", false);
+	}
+
+
+	/**
+	 * Derive a constantInteger.
+	 * 
+	 * Format
+	 * <Integer>
+	 */
+	public boolean deriveConstantInteger ()
+	{
+		enter ("constantInteger");
+		IToken token = scanner.get ();
+		if (token.getTokenClass ().getName ().equals (TOKEN_INTEGER))
+		{
+			stack.push (token);
+
+			return leave ("constantInteger", true);
+		}
 		else
 		{
 			scanner.unget (token);
 		}
 
-		return leave ("anonymousVariable", false);
+		return leave ("constantInteger", false);
 	}
 
 
@@ -497,7 +519,6 @@ public class MLogParser implements IParser
 		IToken token = scanner.get ();
 		if (token.getTokenClass ().getName ().equals (TOKEN_STRING))
 		{
-			// trace (token);
 			stack.push (token);
 
 			return leave ("constantString", true);

@@ -180,7 +180,14 @@ public class Driver implements IScanner
 	{
 		if (tokenStack.size () > 0)
 		{
-			return tokenStack.remove (tokenStack.size () - 1);
+			IToken token = tokenStack.remove (tokenStack.size () - 1);
+			
+			if (Application.log && Application.trace)
+			{
+				System.out.printf ("  GRAB: %s '%s'\n", token.getTokenClass ().getName (), token.getPattern ());
+			}
+			
+			return token;
 		}
 		
 		ArrayList<Character> pushbackBuffer = new ArrayList<Character>();
@@ -325,7 +332,7 @@ public class Driver implements IScanner
 	@Override
 	public void unget (IToken token)
 	{
-		if (Application.log)
+		if (Application.log && Application.trace)
 		{
 			System.out.printf ("  UNGET: %s '%s'\n", token.getTokenClass ().getName (), token.getPattern ());
 		}
